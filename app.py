@@ -6,7 +6,7 @@ from flask_restful import Resource, Api
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://movies.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -15,8 +15,8 @@ ma = Marshmallow(app)
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True)
-    oll_rating = db.Column(db.String(32))
-    dee_rating = db.Column(db.String(32))
+    oll_rating = db.Column(db.String(32), default='N/A')
+    dee_rating = db.Column(db.String(32), default='N/A')
     year = db.Column(db.Integer)
 
     def __init__(self, name, oll_rating, dee_rating, year):
@@ -42,22 +42,29 @@ class MovieManager(Resource):
 
         if not id:
             movies = Movie.query.all()
-            return jsonify(Movies_schema.dump(movies))
+            return jsonify(movies_schema.dump(movies))
         movie = Movie.query.get(id)
         return jsonify(movie_schema.dump(movie))
 
     @staticmethod
+
     def post():
         name = request.json['name']
-        oll_rating = request.json['oll_rating']
-        dee_rating = request.json['dee_rating']
         year = request.json['year']
+        try: 
+            oll_rating = request.json['oll_rating']
+        except KeyError:
+            oll_rating = "N/A"
+        try:
+            dee_rating = request.json['dee_rating']
+        except KeyError:
+            dee_rating = "N/A"
 
         movie = Movie(name, oll_rating, dee_rating, year)
         db.session.add(movie)
         db.session.commit()
         return jsonify({
-            'Message': f'Movie {name} {year} inserted.'
+           'Message': f'Movie {name} {year} inserted.'
         })
 
     @staticmethod

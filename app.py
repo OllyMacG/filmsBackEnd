@@ -15,8 +15,8 @@ ma = Marshmallow(app)
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True)
-    oll_rating = db.Column(db.String(32), default='N/A')
-    dee_rating = db.Column(db.String(32), default='N/A')
+    oll_rating = db.Column(db.String(32), default='?')
+    dee_rating = db.Column(db.String(32), default='?')
     year = db.Column(db.Integer)
 
     def __init__(self, name, oll_rating, dee_rating, year):
@@ -51,15 +51,8 @@ class MovieManager(Resource):
     def post():
         name = request.json['name']
         year = request.json['year']
-        try: 
-            oll_rating = request.json['oll_rating']
-        except KeyError:
-            oll_rating = "N/A"
-        try:
-            dee_rating = request.json['dee_rating']
-        except KeyError:
-            dee_rating = "N/A"
-
+        oll_rating = "?";
+        dee_rating = "?";
         movie = Movie(name, oll_rating, dee_rating, year)
         db.session.add(movie)
         db.session.commit()

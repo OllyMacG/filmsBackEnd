@@ -47,7 +47,6 @@ class MovieManager(Resource):
         return jsonify(movie_schema.dump(movie))
 
     @staticmethod
-
     def post():
         name = request.json['name']
         year = request.json['year']
@@ -67,20 +66,16 @@ class MovieManager(Resource):
         if not id:
             return jsonify({ 'Message': 'Must provide the movie ID' })
         movie = Movie.query.get(id)
-
-        name = request.json['name']
+        
         oll_rating = request.json['oll_rating']
         dee_name = request.json['dee_rating']
-        year = request.json['year']
 
-        movie.name = name
         movie.oll_rating = oll_rating 
         movie.dee_rating = dee_rating
-        movie.year = year 
 
         db.session.commit()
         return jsonify({
-            'Message': f'Movie {name} {age} altered.'
+            'Message': f'Movie {name} {year} altered.'
         })
 
 

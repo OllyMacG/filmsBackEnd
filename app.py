@@ -68,14 +68,14 @@ class MovieManager(Resource):
         movie = Movie.query.get(id)
         
         oll_rating = request.json['oll_rating']
-        dee_name = request.json['dee_rating']
+        dee_rating = request.json['dee_rating']
 
         movie.oll_rating = oll_rating 
         movie.dee_rating = dee_rating
 
         db.session.commit()
         return jsonify({
-            'Message': f'Movie {name} {year} altered.'
+            'Message': f'Movie {movie.name} {movie.year} rated.'
         })
 
 
